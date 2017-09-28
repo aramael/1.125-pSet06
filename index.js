@@ -1,6 +1,11 @@
 var express = require("express");
 var app = express();
 
+app.get('/', function(req, res){
+    console.log('[INFO] Recieved request at ', req.url);
+  	res.sendfile('index.html');
+});
+
 app.get('/add(/:value1)?(/:value2)?', function(req, res){
     console.log('[INFO] Recieved request at ', req.url);
     error_res = "";
