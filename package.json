@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/aramael/1.125-pSet06#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.0"
   }
 }

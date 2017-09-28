@@ -1,6 +1,14 @@
 var express = require("express");
 var app = express();
 
+/*Allow JSON Encoded POST Data*/
+var bodyParser = require('body-parser');
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
+
+/* Routing */
 app.get('/', function(req, res){
     console.log('[INFO] Recieved request at ', req.url);
   	res.sendfile('index.html');
@@ -32,6 +40,42 @@ app.get('/add(/:value1)?(/:value2)?', function(req, res){
     	return;
     }
     result = {"result": value1 + value2};
+  	res.send(result);
+});
+
+app.post('/addArray/', function(req, res){
+    console.log('[INFO] Recieved request at ', req.url);
+
+	error_res = "";
+
+    if (!("numbers" in req.body) || (typeof req.body.numbers == 'undefined')){
+    	error_res += " <numbers> needs to be present";
+    }
+
+    if (!Array.isArray(req.body.numbers)){
+    	error_res += " <numbers> needs to be a list";
+    }
+
+    if (req.body.numbers.length == 0){
+    	error_res += " <numbers> needs to contain at least one integer";
+    }
+
+    var result = {"result": 0};
+    req.body.numbers.forEach(function(element, index) {
+	    var value = parseInt(element);
+
+	    if (isNaN(value)){
+	    	error_res += " <index: " + index + ", value: '" + element + "'> must be a number";
+	    }
+	    
+	    result.result += element;
+	});
+
+    if (error_res.length > 0 ){
+    	res.status(400).send({"status code": 400, "status string": "400 Bad Request","message": error_res});
+    	return;
+    }
+
   	res.send(result);
 });
 
