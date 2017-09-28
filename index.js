@@ -14,18 +14,20 @@ app.get('/', function(req, res){
   	res.sendfile('index.html');
 });
 
-app.get('/add(/:value1)?(/:value2)?', function(req, res){
-    console.log('[INFO] Recieved request at ', req.url);
+app.route('/add(/:value1)?(/:value2)?')
+.all(function(req, res, next){
+	var dict = (req.method == "GET")?req.params:req.body;
+    
     error_res = "";
-    if (!("value1" in req.params) || (typeof req.params.value1 == 'undefined')){
+    if (!("value1" in dict) || (typeof dict.value1 == 'undefined')){
     	error_res += " <value1> needs to be present";
     }
-    if (!("value2" in req.params) || (typeof req.params.value2 == 'undefined')){
+    if (!("value2" in dict) || (typeof dict.value2 == 'undefined')){
     	error_res += " <value2> needs to be present";
     }
 
-    var value1 = parseInt(req.params.value1);
-    var value2 = parseInt(req.params.value2);
+    var value1 = parseInt(dict.value1);
+    var value2 = parseInt(dict.value2);
 
     if (isNaN(value1)){
     	error_res += " <value1> must be a number";
@@ -35,12 +37,27 @@ app.get('/add(/:value1)?(/:value2)?', function(req, res){
     	error_res += " <value2> must be a number";
     }
 
-    if (error_res.length > 0 ){
+    res.locals.result = {"result": value1 + value2};
+    res.locals.error_res = error_res;
+	next();
+})
+.get(function(req, res, next){
+    console.log('[INFO] Recieved request at ', req.url);
+
+    if (res.locals.error_res.length > 0 ){
     	res.status(400).send({"status code": 400, "status string": "400 Bad Request","message": error_res});
     	return;
     }
-    result = {"result": value1 + value2};
-  	res.send(result);
+  	res.send(res.locals.result);
+})
+.post(function(req, res, next){
+    console.log('[INFO] Recieved request at ', req.url);
+
+    if (res.locals.error_res.length > 0 ){
+    	res.status(400).send({"status code": 400, "status string": "400 Bad Request","message": error_res});
+    	return;
+    }
+  	res.send(res.locals.result);
 });
 
 app.post('/addArray/', function(req, res){
