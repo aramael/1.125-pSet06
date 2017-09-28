@@ -1,0 +1,22 @@
+{
+  "name": "apa_1125_pset06",
+  "version": "1.0.0",
+  "description": "Docker Containerised API utilizing NodeJS Express",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aramael/1.125-pSet06.git"
+  },
+  "author": "@aramael",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aramael/1.125-pSet06/issues"
+  },
+  "homepage": "https://github.com/aramael/1.125-pSet06#readme",
+  "dependencies": {
+    "express": "^4.16.0"
+  }
+}
