@@ -66,9 +66,57 @@ app.post('/addArray/', function(req, res){
 
 	    if (isNaN(value)){
 	    	error_res += " <index: " + index + ", value: '" + element + "'> must be a number";
+	    }else{
+		    result.result += element;
+		}	    
+	});
+
+    if (error_res.length > 0 ){
+    	res.status(400).send({"status code": 400, "status string": "400 Bad Request","message": error_res});
+    	return;
+    }
+
+  	res.send(result);
+});
+
+app.post('/numbersGreaterThan/', function(req, res){
+    console.log('[INFO] Recieved request at ', req.url);
+
+	error_res = "";
+
+    /* Greater Than Error Correction */
+    if (!("greaterThan" in req.body) || (typeof req.body.greaterThan == 'undefined')){
+    	error_res += " <greaterThan> needs to be present";
+    }
+
+    var minValue = parseInt(req.body.greaterThan);
+
+    if (isNaN(minValue)){
+    	error_res += " <greaterThan> must be a number";
+    }
+
+    /* Number Error Correction */
+    if (!("numbers" in req.body) || (typeof req.body.numbers == 'undefined')){
+    	error_res += " <numbers> needs to be present";
+    }
+
+    if (!Array.isArray(req.body.numbers)){
+    	error_res += " <numbers> needs to be a list";
+    }
+
+    if (req.body.numbers.length == 0){
+    	error_res += " <numbers> needs to contain at least one integer";
+    }
+
+    var result = {"result": []};
+    req.body.numbers.forEach(function(element, index) {
+	    var value = parseInt(element);
+	    if (isNaN(value)){
+	    	error_res += " <index: " + index + ", value: '" + element + "'> must be a number";
 	    }
-	    
-	    result.result += element;
+	    if (value > minValue){
+	    	result.result.push(value);
+	    }
 	});
 
     if (error_res.length > 0 ){
